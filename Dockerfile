@@ -4,11 +4,14 @@ FROM python:3.13-alpine
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies for Alpine
+RUN apk add --no-cache \
     gcc \
+    musl-dev \
     g++ \
-    && rm -rf /var/lib/apt/lists/*
+    libffi-dev \
+    openssl-dev \
+    curl
 
 # Copy requirements first for better caching
 COPY requirements.txt .
