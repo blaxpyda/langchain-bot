@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  # Streamlit Application
+  streamlit-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: langchain-bot-app
+    ports:
+      - "8501:8501"
+    environment:
+      - CHROMA_HOST=${CHROMA_HOST:-localhost}
+      - CHROMA_PORT=${CHROMA_PORT:-8000}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-groq/groq-llama-3.1-70b}
+      - COHERE_API_KEY=${COHERE_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads  # For file uploads (optional)
+    restart: unless-stopped
+    network_mode: "host"  # Use host network to access ChromaDB running on host

@@ -44,14 +44,24 @@ with st.sidebar:
             else:
                 st.error("Please chunk the document first.")
 
+
         if st.button("Save to ChromaDB"):
             collection = client.get_or_create_collection("documents")
-            collection.add(
-                documents=st.session_state.embedded_chunks,
-                metadatas=[{"source": uploaded_file.name}],
-                ids=[uploaded_file.name],
-            )
-            st.success("Document saved to ChromaDB.")
+
+            num_chunks = len(st.session_state.embedded_chunks)
+
+            ids = [f"{uploaded_file.name}_chunk_{i}" for i in range(num_chunks)]
+            metadatas = [{"source": uploaded_file.name, "chunk_index": i} for i in range(num_chunks)]
+
+            try:
+                collection.add(
+                    documents=st.session_state.embedded_chunks,
+                    metadatas=metadatas,
+                    ids=ids,
+                )
+                st.success("Document saved to ChromaDB.")
+            except Exception as e:
+                st.error(f"Error saving document to ChromaDB: {e}")
 
 if "relevant_docs" not in st.session_state:
     st.session_state.relevant_docs = []
