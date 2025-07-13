@@ -55,7 +55,8 @@ with st.sidebar:
 
             try:
                 collection.add(
-                    documents=st.session_state.embedded_chunks,
+                    documents=st.session_state.chunks,
+                    embeddings=st.session_state.embedded_chunks,
                     metadatas=metadatas,
                     ids=ids,
                 )
@@ -75,7 +76,7 @@ if st.session_state.relevant_docs:
         st.divider()
 
 collection = client.get_or_create_collection(
-    "documents"
+    "documents",
 )
 
 system_message = SystemMessage(
